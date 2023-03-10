@@ -55,3 +55,7 @@ for i = 1:20
     end
 end
 disp(fibonacci_sequence);
+
+x = -pi / 2 : pi / 999 : pi / 2;
+y = ((sin(0.1 * x). / x).*(sin(20 * x)./sin(x))).^2; %точки нужны для почленного использования операций
+plot(x, y);
