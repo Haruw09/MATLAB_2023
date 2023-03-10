@@ -47,3 +47,11 @@ elseif (det(original_matrix) < det(new_matrix))
 else fprintf('Matrices are equal');
 end
 
+fibonacci_sequence = (1:20);
+for i = 1:20
+    if (i < 3)
+        fibonacci_sequence(i) = i - 1;
+    else fibonacci_sequence(i) = fibonacci_sequence(i - 2) + fibonacci_sequence(i - 1);
+    end
+end
+disp(fibonacci_sequence);
