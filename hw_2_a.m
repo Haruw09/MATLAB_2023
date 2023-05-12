@@ -1,25 +1,22 @@
-function [triangulation, boundary_vertices] = a(points)
+function [TR, boundaryPoints, boundaryPointsIndexes] = t1(points_matrix)
     % Выполняем триангуляцию точек
-    tri = delaunayTriangulation(points');
+    TR = delaunayTriangulation(points_matrix');
 
-    % Получаем индексы граничных ребер
-    boundary_edges = tri.convexHull();
-
-    % Извлекаем граничные вершины в порядке обхода против часовой стрелки
-    boundary_vertices = points(:, boundary_edges(:));
-    boundary_vertices = [boundary_vertices, points(:, boundary_edges(1))]; % Добавляем первую вершину в конце
+    % Получаем индексы граничных ребер и граничные вершины
+    boundaryEdgesIndex = freeBoundary(TR);
+    boundaryPointsIndexes = boundaryEdgesIndex(:, 1);
+    boundaryPoints = points_matrix(:, boundaryPointsIndexes);
 
     % Рисуем триангуляцию
-    triplot(tri);
+    hold off;
+    triplot(TR, 'color', 'red');
     hold on;
-    plot(points(1, :), points(2, :), 'ro');
+    plot(points_matrix(1, boundaryPointsIndexes), points_matrix(2, boundaryPointsIndexes), 'b-');
+    
+    % Находим индекс точки, ближайшей к оси 'x'
+    [~, index_min] = min(abs(points_matrix(2, boundaryPointsIndexes)));
 
-    % Отображаем граничные ребра с красным цветом, внутренние ребра - синим цветом
-    edges = tri.edges;
-    for i = 1:size(edges, 1)
-        if any(ismember(edges(i, :), boundary_edges))
-            plot(points(1, edges(i, :)), points(2, edges(i, :)), 'r-');
-        else
-            plot(points(1, edges(i, :)), points(2, edges(i, :)), 'b-');
-        end
-    end
+    % Сдвигаем граничные точки, чтобы начинать с ближайшей к оси 'x'
+    boundaryPointsIndexes = circshift(boundaryPointsIndexes, -index_min+1);
+    boundaryPoints = points_matrix(:, boundaryPointsIndexes);
+end
